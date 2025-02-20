@@ -1,0 +1,6 @@
+---
+- hosts: all
+  connection: ssh
+  roles:
+    - docker-an-pipe
+
