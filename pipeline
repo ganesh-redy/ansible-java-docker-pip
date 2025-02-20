@@ -1,0 +1,54 @@
+pipeline{
+    agent any
+    environment{
+        IMAGE_NAME = "java-ansible"
+        ARTIFACT_REPO = "us-central1-docker.pkg.dev/mythic-inn-420620/my-docker-repo1"
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('github-owner')
+        
+    }
+    stages{
+        stage ("docker hub connection"){
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', 
+                                                  usernameVariable: 'DOCKER_USER', 
+                                                  passwordVariable: 'DOCKER_PASS')]) {
+                    sh '''
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    '''
+            }
+        }
+    }
+    stage("Authenticate with Google Cloud") {
+            steps {
+                sh '''
+                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                gcloud auth configure-docker us-central1-docker.pkg.dev
+                '''
+            }
+        }
+    stages ("build image"){
+        steps {
+            sh '''
+            docker build -t ${IMAGE_NAME}:${BUILD_NUMBER}
+            docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ganesh6498/${IMAGE_NAME}:${BUILD_NUMBER}
+           docker push ganesh6498/${IMAGE_NAME}:${BUILD_NUMBER}
+
+            '''
+        }
+    }
+    stage ("push image artiface"){
+        sh '''
+          docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${ARTIFACT}/${IMAGE_NAME}:${BUILD_NUMBER}
+          docker push ${ARTIFACT}/${IMAGE_NAME}:${BUILD_NUMBER}
+
+        '''
+    }
+
+    stage ("ansible playbook run"){
+        sh '''
+
+        ansible-playbook docker-ansible-pipe.yml -e 'build_number=${BUILD_NUMBER}'
+        '''
+    }
+}
+}
