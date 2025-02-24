@@ -29,7 +29,7 @@ pipeline{
     stage ("build image"){
         steps {
             sh '''
-            docker build -t ${IMAGE_NAME}:${BUILD_NUMBER}
+            docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
             docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ganesh6498/${IMAGE_NAME}:${BUILD_NUMBER}
            docker push ganesh6498/${IMAGE_NAME}:${BUILD_NUMBER}
 
