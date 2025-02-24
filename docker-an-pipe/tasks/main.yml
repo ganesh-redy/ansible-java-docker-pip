@@ -53,7 +53,7 @@
 - name: take image from docker hub
   command: docker pull ganesh6498/java-ansible:{{ build_number }}
 - name: run container
-  command: docker run -it -d -p 8082:8080 ganesh/java-ansible:{{ build_number }}
+  command: docker run -it -d -p 8082:8080 ganesh6498/java-ansible:{{ build_number }}
 
 - name: Clone Git Repository
   git:
