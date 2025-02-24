@@ -6,46 +6,50 @@
   yum:
     name: java
     state: present
+ 
 - name: install git
   yum:
     name : git
     state: present
+  when: ansible_host != "35.209.191.170"
 
 - name: add repo docker
   shell: yum config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   args:
     creates: /etc/yum.repos.d/docker-ce.repo # here it was tell if no creates the only shell cmd execute
+  when: ansible_host != "35.209.191.170"
 
 - name: install docker
   yum:
     name: "{{item}}"
     state: present
+    
 
   loop:
     - docker-ce
     - docker-ce-cli
     - containerd.io
-
-
+  when: ansible_host != "35.209.191.170"
 - name: docker service restart
   service:
     name: docker
     state: started
     enabled: yes
-
+  when: ansible_host != "35.209.191.170"
 - name: create directory
   file:
     path: /root/git-code
     state: directory
+  when: ansible_host != "35.209.191.170"
 
 - name: push local files to remote
   copy:
     src: files/
     dest: /root/jobdone/
+  when: ansible_host != "35.209.191.170"
 
 - name: take image from docker hub
   command: docker pull ganesh6498/java-ansible:{{ build_number }}
-
 - name: run container
   command: docker run -it -d -p 8082:8080 ganesh/java-ansible:{{ build_number }}
 
