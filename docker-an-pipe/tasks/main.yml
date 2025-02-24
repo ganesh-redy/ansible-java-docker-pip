@@ -47,7 +47,9 @@
     src: files/
     dest: /root/jobdone/
   when: ansible_host != "35.209.191.170"
-
+- name: get buildnumber
+  debug:
+    msg: " {{build_number}}"
 - name: take image from docker hub
   command: docker pull ganesh6498/java-ansible:{{ build_number }}
 - name: run container
