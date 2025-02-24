@@ -50,7 +50,7 @@ pipeline{
 
         sh '''
 
-        ansible-playbook docker-ansible-pipe.yml -e 'build_number=${BUILD_NUMBER}'
+        ansible-playbook docker-ansible-pipe.yml -e 'build_number=$BUILD_NUMBER
         '''
 
 
