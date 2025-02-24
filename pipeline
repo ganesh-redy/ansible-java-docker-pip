@@ -36,19 +36,26 @@ pipeline{
             '''
         }
     }
-    stage ("push image artiface"){
+  stage("Push Image to Artifact Repository") {
+    steps {
         sh '''
-          docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${ARTIFACT}/${IMAGE_NAME}:${BUILD_NUMBER}
-          docker push ${ARTIFACT}/${IMAGE_NAME}:${BUILD_NUMBER}
-
+        docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${ARTIFACT_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
+        docker push ${ARTIFACT_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}
         '''
     }
+}
 
     stage ("ansible playbook run"){
+       steps{
+
         sh '''
 
         ansible-playbook docker-ansible-pipe.yml -e 'build_number=${BUILD_NUMBER}'
         '''
+
+
+       }
+        
     }
 }
 }
