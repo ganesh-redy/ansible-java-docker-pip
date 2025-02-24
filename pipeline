@@ -3,13 +3,13 @@ pipeline{
     environment{
         IMAGE_NAME = "java-ansible"
         ARTIFACT_REPO = "us-central1-docker.pkg.dev/mythic-inn-420620/my-docker-repo1"
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-owner')
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp')
         
     }
     stages{
         stage ("docker hub connection"){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credential', 
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', 
                                                   usernameVariable: 'DOCKER_USER', 
                                                   passwordVariable: 'DOCKER_PASS')]) {
                     sh '''
